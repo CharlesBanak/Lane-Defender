@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour
     private InputAction quit;
     private InputAction shoot;
 
+    public GameObject bulletPrefab;
+    public AudioClip shootClip;
+
     private bool isTankMoving;
     public GameObject tank;
     private float moveDirection;
@@ -22,9 +25,6 @@ public class PlayerController : MonoBehaviour
     private int score;
     public TMP_Text livestext;
     public int lives;
-
-    public TMP_Text restartText;
-    public TMP_Text spaceText;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +40,23 @@ public class PlayerController : MonoBehaviour
 
         quit = playerInput.currentActionMap.FindAction("Quit");
         quit.started += Quit_started;
+
+        shoot = playerInput.currentActionMap.FindAction("Shoot");
+        shoot.started += Shoot_started;
+
+        score = 0;
+        lives = 3;
+        scoretext.gameObject.SetActive(true);
+        livestext.gameObject.SetActive(true);
+
+        scoretext.text = "Score: " + score.ToString();
+        livestext.text = "Lives: " + lives.ToString();
+    }
+
+    private void Shoot_started(InputAction.CallbackContext obj)
+    {
+        Instantiate(bulletPrefab, transform.position, transform.rotation);
+        AudioSource.PlayClipAtPoint(shootClip, transform.position);
     }
 
     private void Quit_started(InputAction.CallbackContext obj)
